@@ -1,14 +1,13 @@
-﻿
-
 #include <iostream>
 #include <ctime>
 #include <stdlib.h>
 #include <stdio.h>
+#include <vector> // Используем vector для упрощения копирования
 
 using namespace std;
 
 /**
- * @brief оператор выбоа способа заполнения массива
+ * @brief оператор выбора способа заполнения массива
  * @param RANDOM = 0 автоматическое заполнение
  * @param MANUALLY =1 ручное заполнение
  */
@@ -44,7 +43,7 @@ int getNumber();
 void printArray(const int* arr, const int n);
 
 /**
- * @brief заполнение массива автоматически случайнвми числами в заданном диапазоне
+ * @brief заполнение массива автоматически случайными числами в заданном диапазоне
  * @param arr - массив
  * @param n - размер массива
  * @param min - минимальное значение диапазона значений элементов массива
@@ -75,7 +74,7 @@ int sumOfElementsBelow10(const int* arr, const int n);
 void printIndexesLargerThanNext(const int* arr, const int n);
 
 /**
-* @brief Проходит по всем элементам массива  Проверяет, является ли текущий элемент нечетным и кратным . Если условие выполняется, умножает значение элемента на его индекс
+* @brief Проходит по всем элементам массива. Проверяет, является ли текущий элемент нечетным и кратным 3. Если условие выполняется, умножает значение элемента на значение элемента с индексом 2.
 * @param arr  Указатель на массив целых чисел
 * @param n  Количество элементов в массиве
 */
@@ -92,7 +91,7 @@ void fillArray( int* arr, const int n, const int min, const int max);
 
 /**
 * @brief точка входа в программу
-* @return 0 - если программма выполнена корректно, инече -1
+* @return 0 - если программма выполнена корректно, иначе -1
 */
 int main()
 {
@@ -135,17 +134,23 @@ int main()
     cout << "Индексы тех элементов, значения которых больше значения последующего элемента: ";
     printIndexesLargerThanNext(arr, n);
     cout << endl;
+// Создаем копию массива перед модификацией, если исходный массив нужен для дальнейшего использования.
+    // Если исходный массив после этой точки не нужен, то модификация на месте допустима.
+    std::vector<int> modifiedArr(arr, arr + n); // Копирование в vector для демонстрации
+    // Если придерживаться сырых указателей, нужно было бы вручную выделить память и скопировать:
+    // int* modifiedArr = new int[n];
+    // for (size_t i = 0; i < n; ++i) {
+    //     modifiedArr[i] = arr[i];
+    // }
 
-    multiplyOddMultiplesOf3ByIndex(arr, n);
+    multiplyOddMultiplesOf3ByIndex(modifiedArr.data(), n); // Передаем указатель на скопированные данные
 
     cout << "Измененный массив: ";
-    for (size_t i = 0; i < n; ++i)
-    {
-        cout << arr[i] << " ";
-    }
-    cout << endl;
+    // Вместо дублирующего кода для вывода массива, вызываем существующую функцию printArray
+    printArray(modifiedArr.data(), n); // Передаем указатель на данные измененного вектора
+    cout << endl; // Добавляем перевод строки после вывода, как было в исходном коде
 
-    delete[] arr;
+    delete[] arr; // Не забываем удалить исходный массив
 
     return 0;
 }
@@ -180,20 +185,26 @@ int getNumber()
     return number;
 }
 
+// Изменена функция printArray, чтобы она выводила элементы в одну строку через пробел
+// и добавляла перевод строки в конце, если это требуется для данного вывода
 void printArray(const int* arr, const int n)
 {
     for (size_t i = 0; i < n; i++)
     {
-        cout << "arr[" << i << "] = " << arr[i] << endl;
+        cout << arr[i] << " "; // Вывод элемента и пробела
     }
+    // Здесь не нужно добавлять cout << endl;, так как оно будет добавлено в main после вызова
+    // для измененного массива. Если требуется перевод строки после каждого вывода массива,
+    // тогда можно добавить его здесь.
 }
+
 
 void fillArrayRandom(int* arr, const int n, const int min, const int max)
 {
     srand(time(0));
     for (size_t i = 0; i < n; i++)
     {
-        arr[i] = rand() % (max - min) + min;
+        arr[i] = rand() % (max - min + 1) + min;
     }
 }
 
@@ -228,11 +239,18 @@ void printIndexesLargerThanNext(const int* arr, const int n)
 
 void multiplyOddMultiplesOf3ByIndex(int* arr, const int n)
 {
+    if (n < 3) {
+        cout << "Ошибка: Размер массива меньше 3. Невозможно использовать arr[2] для умножения." << endl;
+        return;
+    }
+
+    int valueOfArr2 = arr[2];
+
     for (size_t i = 0; i < n; i++)
     {
         if (arr[i] % 2 != 0 && arr[i] % 3 == 0)
         {
-            arr[i] *= arr[2];
+            arr[i] *= valueOfArr2;
         }
     }
 }
@@ -245,7 +263,7 @@ void fillArray( int* arr, const int n, const int min, const int max)
         arr[i] = getNumber();
         if (arr[i] < min || arr[i] > max)
         {
-            cout << "Значение вне диапазона" << endl;
+            cout << "Значение вне диапазона. Повторите ввод." << endl;
             i--;
         }
     }
