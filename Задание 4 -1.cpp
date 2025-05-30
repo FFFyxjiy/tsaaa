@@ -47,7 +47,7 @@ int main()
     cout << "Введите начальное значение x: ";
     double startX = getPositiveX();
 
-    cout << "Введите конечное значение x: ";
+    cout << "Введите конечное значение x любое: ";
     double endX = getPositiveX();
 
     if (startX > endX)
@@ -65,9 +65,15 @@ int main()
     for (double x = startX; x < endX + step; x += step)
     {
         if (OOF(x))
-        {
+       {
             double y = calculateFunction(x);
-            cout << x << " | " << y << endl;
+            std::cout << x << " | " << y << std::endl;
+        }
+        else
+        {
+            // Если x не входит в область определения функции (например, x <= 0 для log(x)),
+            // выводим сообщение о невозможности расчета.
+            cout << x << " | " << "вычисление невозможно" << std::endl;
         }
     }
 
@@ -76,7 +82,7 @@ int main()
 
 double getValue()
 {
-    double value;
+    double value = 0;
     cin >> value;
     if (cin.fail())
     {
@@ -95,29 +101,12 @@ double calculateFunction(const double x)
 
 double getPositiveStep()
 {
-    double step;
-    do {
-        step = getValue();
         if (step <= 0)
         {
             cout << "Ошибка. Шаг должен быть положительным. Повторите ввод." << endl;
         }
     } while (step <= 0);
     return step;
-}
-
-double getPositiveX()
-{
-    double x;
-    do {
-        cout << "Введите положительное значение x: ";
-        x = getValue();
-        if (x <= 0)
-        {
-            cout << "Ошибка. X должно быть положительным. Повторите ввод." << endl;
-        }
-    } while (x <= 0);
-    return x;
 }
 
 bool OOF(double x)
