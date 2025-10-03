@@ -1,33 +1,44 @@
-#include <iostream> // Для работы с вводом/выводом (cout)
-#include <cmath>    // Для математических функций (cbrt, sin, cos, abs)
+#include <iostream>
+#include <cmath>
 
 using namespace std;
 
+// Исходные значения для вычислений
+const double VALUE_X = 2.0;
+const double VALUE_Y = 0.7;
+const double VALUE_Z = -1.0;
+
+/**
+ * Вычисляет переменную 'a':
+ * a = cbrt(x * y * z + abs(z * sin(y)))
+ */
+double calculate_a(double x, double y, double z) {
+    double numerator = x * y * z + abs(z * sin(y));
+    return cbrt(numerator);
+}
+
+/**
+ * Вычисляет переменную 'b':
+ * b = y * cos(x * z * sin(y)) + 3
+ */
+double calculate_b(double x, double y, double z) {
+    double cos_argument = x * z * sin(y);
+    return y * cos(cos_argument) + 3; 
+}
+
 int main() {
-    // Заданные константы
-    double x = 2.0;
-    double y = 0.7;
-    double z = -1.0;
+    double a = calculate_a(VALUE_X, VALUE_Y, VALUE_Z);
+    double b = calculate_b(VALUE_X, VALUE_Y, VALUE_Z);
 
-    // Вычисление переменной 'a'
-    // a = cbrt(x * y * z + abs(z * sin(y)))
-    double a_числитель = x * y * z + abs(z * sin(y)); // Теперь можно использовать abs и sin без std::
-    double a = cbrt(a_числитель); // Теперь можно использовать cbrt без std::
-
-    // Вычисление переменной 'b'
-    // b = y * cos(x * z * sin(y)) + 3
-    double b_аргумент = x * z * sin(y); // Теперь можно использовать sin без std::
-    double b = y * cos(b_аргумент) + 3; // Теперь можно использовать cos без std::
-
-    // Вывод результатов на экран
-    cout << "Исходные данные:" << endl; // Теперь можно использовать cout и endl без std::
-    cout << "x = " << x << endl;
-    cout << "y = " << y << endl;
-    cout << "z = " << z << endl;
-    cout << endl; // Пустая строка для лучшей читаемости
+    cout << "Исходные данные:" << endl;
+    cout << "x = " << VALUE_X << endl;
+    cout << "y = " << VALUE_Y << endl;
+    cout << "z = " << VALUE_Z << endl;
+    cout << endl;
     cout << "Результаты вычислений:" << endl;
     cout << "a = " << a << endl;
     cout << "b = " << b << endl;
 
-    return 0; // Возвращаем 0, что означает успешное завершение программы
+    return 0;
 }
+
