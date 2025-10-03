@@ -8,19 +8,11 @@ const double VALUE_X = 2.0;
 const double VALUE_Y = 0.7;
 const double VALUE_Z = -1.0;
 
-/**
- * Вычисляет переменную 'a':
- * a = cbrt(x * y * z + abs(z * sin(y)))
- */
 double calculate_a(double x, double y, double z) {
     double numerator = x * y * z + abs(z * sin(y));
     return cbrt(numerator);
 }
 
-/**
- * Вычисляет переменную 'b':
- * b = y * cos(x * z * sin(y)) + 3
- */
 double calculate_b(double x, double y, double z) {
     double cos_argument = x * z * sin(y);
     return y * cos(cos_argument) + 3; 
