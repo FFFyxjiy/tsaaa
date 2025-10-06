@@ -2,103 +2,43 @@
 #include <ctime>
 #include <stdlib.h>
 #include <stdio.h>
-#include <vector> // Используем vector для упрощения копирования
 
 using namespace std;
 
-/**
- * @brief оператор выбора способа заполнения массива
- * @param RANDOM = 0 автоматическое заполнение
- * @param MANUALLY =1 ручное заполнение
- */
 enum SELECT
 {
     RANDOM = 0,
     MANUALLY = 1
 };
 
-/**
- * @brief проверяет размер массива
- * @param n - размер массива
- */
 void checkN(const int n);
 
-/**
- * @brief считывает размер массива
- * @return размер массива в беззнаковом типе данных
- */
 size_t getSize();
 
-/**
- * @brief считывает значение типа int
- * @return считанное значение целочисленное
- */
 int getNumber();
 
-/**
- * @brief вывод массива на экран
- * @param arr - массив
- * @param n - размер массива
- */
 void printArray(const int* arr, const int n);
 
-/**
- * @brief заполнение массива автоматически случайными числами в заданном диапазоне
- * @param arr - массив
- * @param n - размер массива
- * @param min - минимальное значение диапазона значений элементов массива
- * @param max - максимальное значение диапазона значений элементов массива
- */
 void fillArrayRandom(int* arr, const int n, const int min, const int max);
 
-/**
- * @brief проверяет диапазон
- * @param min - минимальное значение диапазона значений элементов массива
- * @param max - максимальное значение диапазона значений элементов массива
- */
 void checkRange(const int min, const int max);
 
-/**
- * @brief суммирует все элементы массива, значения которых по модулю меньше 10.
- * @param arr Указатель на массив целых чисел.
- * @param n Количество элементов в массиве.
- * @return Сумма элементов массива, значения которых по модулю меньше 10.
- */
 int sumOfElementsBelow10(const int* arr, const int n);
 
-/**
- * @brief Функция выводит индексы тех элементов, значения которых больше значения последующего элемента.
- * @param arr  массив
- * @param n Количество элементов в массиве
- */
 void printIndexesLargerThanNext(const int* arr, const int n);
 
-/**
-* @brief Проходит по всем элементам массива. Проверяет, является ли текущий элемент нечетным и кратным 3. Если условие выполняется, умножает значение элемента на значение элемента с индексом 2.
-* @param arr  Указатель на массив целых чисел
-* @param n  Количество элементов в массиве
-*/
 void multiplyOddMultiplesOf3ByIndex(int* arr, const int n);
 
-/**
- * @brief заполнение массива вручную
- * @param arr - массив
- * @param n - размер массива
- * @param min - минимальное значение диапазона значений элементов массива
- * @param max - максимальное значение диапазона значений элементов массива
- */
 void fillArray( int* arr, const int n, const int min, const int max);
 
-/**
-* @brief точка входа в программу
-* @return 0 - если программма выполнена корректно, иначе -1
-*/
+int* copyArray(const int* sourceArr, const int n);
+
 int main()
 {
 
     setlocale(LC_ALL, "Russian");
-    int n = getSize();
-    int* arr = new int[n];
+    size_t n = getSize();
+    int* arr = new int[n]; 
 
     cout << "Введите минимальное и максимальное значение диапазона: ";
     int minValue = getNumber();
@@ -121,6 +61,7 @@ int main()
         break;
     default:
         cout << "Ваш выбор неверен" << endl;
+        delete[] arr;
         return -1;
         break;
     }
@@ -128,29 +69,22 @@ int main()
     cout << "Элементы массива:" << endl;
     printArray(arr, n);
 
-    // Вызов функций
     cout << "Сумма элементов, значения которых по модулю меньше 10: " << sumOfElementsBelow10(arr, n) << endl;
 
     cout << "Индексы тех элементов, значения которых больше значения последующего элемента: ";
     printIndexesLargerThanNext(arr, n);
     cout << endl;
-// Создаем копию массива перед модификацией, если исходный массив нужен для дальнейшего использования.
-    // Если исходный массив после этой точки не нужен, то модификация на месте допустима.
-    std::vector<int> modifiedArr(arr, arr + n); // Копирование в vector для демонстрации
-    // Если придерживаться сырых указателей, нужно было бы вручную выделить память и скопировать:
-    // int* modifiedArr = new int[n];
-    // for (size_t i = 0; i < n; ++i) {
-    //     modifiedArr[i] = arr[i];
-    // }
 
-    multiplyOddMultiplesOf3ByIndex(modifiedArr.data(), n); // Передаем указатель на скопированные данные
+    int* modifiedArr = copyArray(arr, n);
+
+    multiplyOddMultiplesOf3ByIndex(modifiedArr, n); 
 
     cout << "Измененный массив: ";
-    // Вместо дублирующего кода для вывода массива, вызываем существующую функцию printArray
-    printArray(modifiedArr.data(), n); // Передаем указатель на данные измененного вектора
-    cout << endl; // Добавляем перевод строки после вывода, как было в исходном коде
-
-    delete[] arr; // Не забываем удалить исходный массив
+    printArray(modifiedArr, n); 
+    cout << endl; 
+    
+    delete[] arr; 
+    delete[] modifiedArr; 
 
     return 0;
 }
@@ -185,17 +119,12 @@ int getNumber()
     return number;
 }
 
-// Изменена функция printArray, чтобы она выводила элементы в одну строку через пробел
-// и добавляла перевод строки в конце, если это требуется для данного вывода
 void printArray(const int* arr, const int n)
 {
     for (size_t i = 0; i < n; i++)
     {
-        cout << arr[i] << " "; // Вывод элемента и пробела
+        cout << arr[i] << " "; 
     }
-    // Здесь не нужно добавлять cout << endl;, так как оно будет добавлено в main после вызова
-    // для измененного массива. Если требуется перевод строки после каждого вывода массива,
-    // тогда можно добавить его здесь.
 }
 
 
@@ -267,4 +196,19 @@ void fillArray( int* arr, const int n, const int min, const int max)
             i--;
         }
     }
+}
+
+int* copyArray(const int* sourceArr, const int n)
+{
+    if (n <= 0) {
+        return nullptr;
+    }
+    
+    int* destArr = new int[n]; 
+    
+    for (size_t i = 0; i < n; ++i) {
+        destArr[i] = sourceArr[i];
+    }
+    
+    return destArr;
 }
